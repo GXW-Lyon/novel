@@ -1,33 +1,95 @@
 <template>
   <div class="allView">
-    <navbar></navbar>
-    <router-view class="wrapper"></router-view>
+    <navbar class="topnav"></navbar>
+    <transition :name="$store.state.transitionName">
+        <router-view class="wrapper"></router-view>
+    </transition>
   </div>
 </template>
 <script>
   import navbar from '../components/topbar'
-  export default{
-    name:'index',
-    data(){
-      return{
-        wrapperHeight:0
+
+  export default {
+    name: 'index',
+    data() {
+      return {
+        wrapperHeight: 0
       }
     },
-    components:{
+    watch:{
+      '$route'(to,from){
+        console.log(to);
+        console.log(from);
+        if(to.query.id>from.query.id){
+          this.$store.state.transitionName = 'slide-left'
+        }else{
+          this.$store.state.transitionName = 'slide-right'
+        }
+      }
+    },
+    components: {
       navbar
     },
   }
 </script>
 <style>
-  .allView{
+  .allView {
     width: 100%;
     height: 100%;
   }
-  .wrapper{
+
+  .topnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+
+  .wrapper {
     width: 100%;
     height: 100%;
-    padding-top: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 115px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1;
+    -webkit-overflow-scrolling: touch;
+    transition: all .8s cubic-bezier(.55, 0, .1, 1);
   }
+  .novelCont{
+    -webkit-overflow-scrolling: touch;
+  }
+  .transparentBg {
+    background: rgba(255, 255, 255, 0);
+  }
+
+  .comSwiepr, .manContent, .newBook, .manContent, .freeWeek, .weui-loadmore, .assortment, .assortmentCont, .mineList, .detaiContent, .comBooks, .manList, .assortmentList, .moreList, .bookDetail {
+    background: #fff;
+  }
+
+  .kind, .bookname {
+    color: #000;
+  }
+
+  .novelPic img {
+    box-shadow: 0px 0px 5px #999;
+  }
+
   
+  .slide-left-enter,
+  .slide-right-leave-active {
+      opacity: 0;
+      -webkit-transform: translate(100%, 0);
+      transform: translate(100%, 0);
+  }
+ 
+  .slide-left-leave-active,
+  .slide-right-enter {
+      opacity: 0;
+      -webkit-transform: translate(-100%, 0);
+    transform: translate(-100%, 0);
+  }
 </style>
 
