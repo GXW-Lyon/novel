@@ -5,28 +5,30 @@
                                                               alt=""></div>
       <div class="title">书币充值</div>
     </div>
-    <div class="lineBg"></div>
     <div class="rechCont">
-      <div class="text">请选择充值金额</div>
-      <div class="rechargePic clearfloat">
-        <div class="wra clearfloat" v-for="(item,index) in priceItems" @click="exchange(index,item.nums,item.bookNums)" :class="{picActive: activeIndex == index}">
-          <div v-if="index==0">
-            <div class="price">￥{{item.nums}}.00</div>
-            <div class="firstPrice"><div class="nums">{{item.bookNums}}书币</div><div class="present"><img :src="item.src" alt=""></div></div>
+      <div class="lineBg"></div>
+      <div class="wra">
+        <div class="text">请选择充值金额</div>
+        <div class="rechargePic clearfloat">
+          <div class="wra clearfloat" v-for="(item,index) in priceItems" @click="exchange(index,item.nums,item.bookNums)" :class="{picActive: activeIndex == index}">
+            <div v-if="index==0">
+              <div class="price">￥{{item.nums}}.00</div>
+              <div class="firstPrice"><div class="nums">{{item.bookNums}}书币</div><div class="present"><img :src="item.src" alt=""></div></div>
+            </div>
+            <div v-else>
+              <div class="price">￥{{item.nums}}.00</div>
+              <div class="bookNums">{{item.bookNums}}书币</div>
+              <div class="othersPrice"><img :src="item.src"  alt=""></div>
+            </div>
           </div>
-          <div v-else>
-            <div class="price">￥{{item.nums}}.00</div>
-            <div class="bookNums">{{item.bookNums}}书币</div>
-            <div class="othersPrice"><img :src="item.src"  alt=""></div>
-          </div>
+        </div> 
+        <div class="prompt">
+          <div>温馨提示</div>
+          <div>1、充值成功后将于10分钟内下发至您的帐户</div>
+          <div>2、充值的书币不能赠送他人、不提现、不退款</div>
+          <div>3、充值中遇到的问题，您可以至我们公众号下联系我方客服解决</div>
+          <div>4、充值比例为1元=100书币</div>
         </div>
-      </div> 
-      <div class="prompt">
-        <div>温馨提示</div>
-        <div>1、充值成功后将于10分钟内下发至您的帐户</div>
-        <div>2、充值的书币不能赠送他人、不提现、不退款</div>
-        <div>3、充值中遇到的问题，您可以至我们公众号下联系我方客服解决</div>
-        <div>4、充值比例为1元=100书币</div>
       </div>
     </div>
     <div class="layersBox" v-if="dialogFlag">
@@ -34,9 +36,9 @@
       <div class="dialog">
         <div class="close" @click="CancelPayment"><img src="../../assets/img/x.png" alt=""></div>
         <div class="title">充值</div>
-        <div class="novelNumber">{{bookMoney}}书币</div>
-        <div class="bookMoney">￥{{money}}</div>
-        <div class="btn" @click="ConfirmPayment"><span>确认支付</span></div>
+        <div class="novelNumber">￥{{money}}</div>
+        <div class="bookMoney">{{bookMoney}}书币</div>
+        <div class="btn" @click="ConfirmPayment"><img src="../../assets/img/payBtnsss.png" alt=""></div>
       </div>
     </div>
   </div>
@@ -56,17 +58,17 @@
           {
             src:require('../../assets/img/priceTwo.png'),
             nums:50.00,
-            bookNums:'5000+3000'
+            bookNums:'8000'
           },
           {
             src:require('../../assets/img/priceThree.png'),
             nums:100.00,
-            bookNums:'10000+8000'
+            bookNums:'18000'
           },
           {
             src:require('../../assets/img/priceFour.png'),
             nums:200.00,
-            bookNums:'20000+20000'
+            bookNums:'40000'
           },
         ],
         dialogFlag:false,
@@ -75,6 +77,7 @@
       }
     },
     created() {
+      console.log(this);
     },
     methods: {
       back() {
@@ -91,6 +94,34 @@
         this.dialogFlag = false;
       },
       ConfirmPayment(){
+        let _this=this;
+        let times = Date.parse(new Date());
+        let md5 = this.getmd5(localStorage.getItem('uuid') + times).toUpperCase();
+        this.$http({
+          method: 'get',
+          url: this.apiUrl.novelCoinOrders,
+          headers:{times: times, sign: md5},
+          params: {total_fee: this.money*100}
+        }).then(res => {
+          if (res.status == 200) {
+            console.log(res);
+            var data=res.data;
+            if(data.code=='SUCCESS'){
+              console.log(data.timeStamp);
+              wx.chooseWXPay({
+                timestamp: data.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                nonceStr: data.nonceStr, // 支付签名随机串，不长于 32 位
+                package: data.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                signType: data.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                paySign: data.paySign, // 支付签名
+                success: function (res) {
+                  // _this.$router.push({path: '/novel/mineList'});
+                  _this.$router.go(-1)
+                }
+              });
+            }
+          }
+        }).catch();
         this.activeIndex = -1;
         this.dialogFlag = false;
       }
@@ -118,6 +149,7 @@
     top: 0;
     overflow-x: auto;
     overflow-y: auto;
+    background: #fff;
   }
 
   .rechargeTop {
@@ -156,9 +188,6 @@
   }
 
   .recharge .lineBg {
-    position: fixed;
-    left: 0;
-    top: 46px;
     width: 100%;
     height: 5px;
     background: url('../../assets/img/linebg.png');
@@ -167,12 +196,16 @@
   .recharge .rechCont {
     width: 100%;
     height: 100%;
-    padding: 0 15px;
     padding-top: 51px;
     position: absolute;
     left: 0;
     top: 0;
+    background: #fff;
   }
+
+   .recharge .rechCont .wra{
+    padding: 0 15px;
+   }
 
   .recharge .rechCont .text {
     line-height: 50px;
@@ -222,12 +255,10 @@
   }
 
   .recharge .rechCont .rechargePic .wra .firstPrice{
-    padding-top: 15px;
     font-size: 12px;
     line-height: 12px;
     color: #000;
     margin-top: 10px;
-    padding: 0 8px;
     display: -webkit-flex;
     display: flex;
     justify-content: space-around
@@ -272,8 +303,8 @@
   }
 
   .recharge .layersBox .dialog{
-    width: 80%;
-    height: 220px;
+    width: 65%;
+    height: 210px;
     position: absolute;
     top: 0;
     right: 0;
@@ -281,58 +312,60 @@
     left: 0;
     margin:auto;
     background: #fff;
-    border-radius: 5px;
-    padding: 0 35px;
+    border-radius: 12px;
   }
 
   .recharge .layersBox .close{
     width: 50px;
     height: 50px;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 6px;
+    top: 2px;
   }
 
   .recharge .layersBox .close img{
-    width: 20px;
+    width: 25px;
     height: auto;
     vertical-align: middle;
-    padding-top: 5px;
-    padding-left: 5px;
+    padding-top: 6px;
+    padding-left: 10px;
   }
 
   .recharge .layersBox .dialog .title{
     width: 100%;
-    height: 38px;
-    line-height: 38px;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e8e8e8;
   }
 
   .recharge .layersBox .dialog .novelNumber{
     text-align: center;
-    line-height: 40px;
+    line-height: 42px;
     color: #999;
+    font-size: 16px;
   }
 
   .recharge .layersBox .dialog .bookMoney{
-    font-size: 45px;
+    font-size: 32px;
     font-weight: 700;
     text-align: center;
+    padding-top: 5px;
   }
   .recharge .layersBox .dialog .btn{
-    margin-top: 25px;
     width: 100%;
-    text-align: center;
-    color: #ff4646;
+    position: absolute;
+    left: 0;
+    bottom: 0;
   }
 
-  .btn span{
-    padding: 5px 10px;
-    border: 1px solid red;
-    border-radius: 12px;
-  }
+   .recharge .layersBox .dialog .btn img{
+     width: 100%;
+     height: auto;
+     vertical-align: middle;
+   }
+
 </style>
 

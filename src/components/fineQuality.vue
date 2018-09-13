@@ -51,7 +51,7 @@
   }
 
   .manContent .manTitle {
-    padding: 22px 0 20px 0;
+    padding: 5px 0 20px 0;
   }
 
   .manContent .manTitle .kind {
@@ -90,6 +90,7 @@
     width: 100%;
     height: auto;
     vertical-align: middle;
+    box-shadow: 0px 0px 5px #999;
   }
 
   .novelName, .novelPrice {

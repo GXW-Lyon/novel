@@ -10,14 +10,14 @@
         </router-link>
       </div>
     </div>
-    <div class="search">
+    <!-- <div class="search">
       <div class="searchBox">
         <input type="text">
         <div class="searchBtn">
           <img src="../assets/img/searchBtn1.png" alt=""><span>|</span><span>搜索</span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -37,16 +37,14 @@
             path:'/novel/womenList',
             id:2
           },
-          {
-            name:'分类',
-            path:'/novel/assortmentList',
-            id:3
-          },
-          {
-            name:'我的',
-            path:'/novel/mineList',
-            id:4
-          },
+          // {
+          //   name:'分类',
+          //   path:'/novel/assortmentList',
+          // },
+          // {
+          //   name:'我的',
+          //   path:'/novel/mineList',
+          // },
         ],
       }
     },
@@ -59,7 +57,7 @@
   .comTop {
     box-sizing: border-box;
     width: 100%;
-    height: 115px;
+    height: 56px;
     position: fixed;
     left: 0;
     top: 0;
@@ -95,9 +93,9 @@
     justify-content: space-around;
     background: #fff;
     font-size: 14px;
-    margin-top: 20px;
-    margin-left: 116px;
-    margin-right: 15px;
+    margin-top: 14px;
+    margin-left: 158px;
+    margin-right: 62px;
   }
 
   .comTop .topBar .navBox {

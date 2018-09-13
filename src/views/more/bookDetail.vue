@@ -1,8 +1,7 @@
 <template>
   <div class="bookDetail" ref="scroTops">
     <div class="topBanner">
-      <div style="width:46px;height:100%;" @click="routeBack"><img class="returnBack"
-                                                                   src="../../assets/img/returnback.png" alt=""></div>
+      <div style="width:46px;height:100%;" @click="routeBack"><img class="returnBack" src="../../assets/img/returnback.png" alt=""></div>
       <div class="topTitle">{{title}}</div>
     </div>
     <div class="lineBg"></div>
@@ -12,17 +11,27 @@
           <img :src="novelPic" alt="">
         </div>
         <div class="right">
-          <p>{{title}}</p>
-          <div class="lei"><span>分类</span><span>{{typename}}</span></div>
-          <div class="ahtuor"><span>作者</span><span>{{author}}</span></div>
-          <div class="textNum">5币/千字</div>
+          <p class="rTitle">{{title}}</p>
+          <div class="lei"><span><img src="../../assets/img/leibie.png" alt=""></span><span>{{typename}}</span></div>
+          <div class="lei"><span><img src="../../assets/img/man.png" alt=""></span><span>{{author}}</span></div>
+          <div class="lei"><span><img src="../../assets/img/jiaqian.png" alt=""></span>5书币/千字</div>
         </div>
       </div>
       <div class="novelText">
         <div>{{summary}}</div>
         <!-- <div class="btn"><img src="../../assets/img/moretext.png" alt=""></div> -->
       </div>
-      <div class="readBtn" @click="readBook"><img src="../../assets/img/readBtn.png" alt=""></div>
+      <div class="readBtn">
+        <div @click="goBookshelf" v-if="!joinShelf">
+          <img src="../../assets/img/jiarushujia.png" alt="">
+        </div>
+        <div v-else>
+          <img src="../../assets/img/huiseshujia.png" alt="">
+        </div>
+        <div  @click="readBook">
+          <img src="../../assets/img/readBtn.png" alt="">
+        </div>
+      </div>
       <div class="aboutNovel">
         <div class="comRow">
           <span class="menu">目录</span>
@@ -33,10 +42,10 @@
         </div>
         <div class="comRow">
             <span class="section">第<span class="gold">{{chapterSum}}</span>章</span>
-            <span class="section">{{chapterName}}</span>
-            <div class="centerBtn">
+            <span class="section" style="font-size:16px;color:#000;">{{chapterName}}</span>
+            <!-- <div class="centerBtn">
               <img src="../../assets/img/new.png" alt="">
-            </div>
+            </div> -->
         </div>
         <div class="comRow">
             <span class="section">更新于<span class="gold">{{utime}}</span></span>
@@ -46,7 +55,7 @@
       <!-- <fine-quality :data="betterMoreList"></fine-quality> -->
       <div class="newMore">
         <div class="manTitle">
-          <span class="kind">{{title}}</span>
+          <span class="kind">{{typename}}</span>
           <span class="moreList" @click="moreList">更多></span>
         </div>
         <div class="manNovel">
@@ -56,13 +65,13 @@
           </div>
         </div>
       </div>
-      <wv-loadmore type="line" text="这就是我的底线"></wv-loadmore>
+      <wv-loadmore type="line" text="大蜜小说"></wv-loadmore>
     </div>
   </div>
 </template>
 <script>
   import fineQuality from '../../components/fineQuality'
-
+  import { Toast } from 'mint-ui';
   export default {
     name: 'bookDetail',
     data() {
@@ -81,7 +90,8 @@
         typename: '',
         utime: '',
         betterMoreList: [],
-        moreType:''
+        moreType:'',
+        joinShelf:false,
       }
     },
     created() {
@@ -98,7 +108,7 @@
         this.$router.go(-1)
       },
       readBook() {
-        this.$router.push({path: '/readNovel', query: {id: this.bookId, page: 1, title: this.title,allMenu:this.chapterSum}});
+        this.$router.push({path: '/readNovel', query: {id: this.bookId, title: this.title,page:1,joinShelf:this.joinShelf,novelType:this.bookType}});
       },
       goNovelMenu() {
         this.$router.push({path: '/novelMenuList',query: {id: this.bookId,begin:0, title: this.title}});
@@ -123,6 +133,7 @@
             this.title = res.data.novelItem.title;
             this.typename = res.data.novelItem.typename;
             this.type = res.data.novelItem.type;
+            this.joinShelf = res.data.joinShelf;
           }
         }).catch();
       },
@@ -145,12 +156,29 @@
         this.bookDetailInfo();
         this.bookMoreList();
         this.$refs.scroTops.scrollTop=0;
-
-        // this.$router.push({path: '/bookDetail', query: {id: id, type: type}});
       },
       moreList() {
         this.$router.push({path: '/moreList',query:{type:this.moreType}});
       },
+      goBookshelf(){
+        let times = Date.parse(new Date());
+        let md5 = this.getmd5(localStorage.getItem('uuid') + times).toUpperCase();
+        this.$http({
+          method:'post',
+          url:this.apiUrl.novelShelfAdd,
+          params:{pk:this.bookId},
+          headers: {times: times, sign: md5}
+        }).then(res=>{
+          if(res.status==200){
+            this.joinShelf = true;
+            Toast({
+              message: res.data.msg,
+              position: 'center',
+              duration: 2000
+            });
+          }
+        }).catch();
+      }
     }
   }
 </script>
@@ -206,7 +234,7 @@
     text-align: center;
     position: absolute;
     top: 0;
-    right: 15px;
+    right: 0;
     bottom: 0;
     left: 0;
     margin: auto;
@@ -237,46 +265,48 @@
   }
 
   .bookDetail .detaiContent .novelInfo .left {
-    width: 28%;
+    width: 35%;
     float: left;
-    padding-right: 16px;
+    margin-right: 20px;
   }
 
   .bookDetail .detaiContent .novelInfo .left img {
     width: 100%;
+    height: auto;
+    vertical-align: middle;
+    box-shadow: 0px 0px 5px #999;
   }
 
   .bookDetail .detaiContent .novelInfo .right {
-    width: 65%;
+    width: 50%;
     float: left;
     color: #999;
-    font-size: 14px;
   }
 
-  .bookDetail .detaiContent .novelInfo .right p {
+  .bookDetail .detaiContent .novelInfo .right .rTitle{
     font-size: 17px;
     font-weight: 700;
     color: #000;
+    margin-bottom: 20px;
   }
 
   .bookDetail .detaiContent .novelInfo .right .lei {
-    line-height: 24px;
+    display: -webkit-flex;
+    display: flex;
+    font-size: 14px;
+    line-height: 13px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+
+  .bookDetail .detaiContent .novelInfo .right .lei img{
+    width: 14px;
+    height: auto;
+    vertical-align: middle;
   }
 
   .bookDetail .detaiContent .novelInfo .right .lei span {
     padding-right: 10px;
-  }
-
-  .bookDetail .detaiContent .novelInfo .right .ahtuor {
-    line-height: 24px;
-  }
-
-  .bookDetail .detaiContent .novelInfo .right span {
-    padding-right: 10px;
-  }
-
-  .bookDetail .detaiContent .novelInfo .right .textNum {
-    line-height: 24px;
   }
 
   .bookDetail .detaiContent .novelText {
@@ -300,16 +330,19 @@
   }
 
   .bookDetail .detaiContent .readBtn {
-    height: 36px;
     width: 100%;
     text-align: center;
     margin-top: 25px;
     margin-bottom: 25px;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: space-between;
   }
 
   .bookDetail .detaiContent .readBtn img {
-    width: 54%;
-    margin: 0 auto;
+    width: 75%;
+    height: auto;
+    vertical-align: middle;
   }
 
   .bookDetail .detaiContent .aboutNovel .comRow {
@@ -403,6 +436,7 @@
     width: 100%;
     height: auto;
     vertical-align: middle;
+    box-shadow: 0px 0px 5px #999;
   }
 
   .bookDetail .detaiContent .newMore .manNovel .novelWra .novelName {

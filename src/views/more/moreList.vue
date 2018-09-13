@@ -6,9 +6,9 @@
       </div>
       <div class="topTitle">{{novelTitle}}</div>
     </div>
-    <div class="lineBg"></div>
     <div class="comBooks">
-      <div class="novelCon clearfloat" v-for="item in moreLists"  @click="goNovelDetail(item.id,item.type)">
+      <div class="lineBg"></div>
+      <div class="novelCon clearfloat" v-for="item in moreLists" @click="goNovelDetail(item.id,item.type)">
         <div class="novelLeft">
           <img :src="item.cover" alt="">
         </div>
@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-    <wv-loadmore type="line" text="这就是我的底线"></wv-loadmore>
+    <wv-loadmore type="line" text="大蜜小说"></wv-loadmore>
   </div>
 </template>
 <script>
@@ -36,33 +36,33 @@
     name: 'moreList',
     data() {
       return {
-        novelType:'',
-        novelTitle:'',
-        moreLists:[]
+        novelType: '',
+        novelTitle: '',
+        moreLists: []
       }
     },
     created() {
-      this.novelType=this.$route.query.type;
+      this.novelType = this.$route.query.type;
       this.novelMoreList();
     },
     methods: {
       routeBack() {
         this.$router.go(-1)
       },
-      novelMoreList(){
+      novelMoreList() {
         this.$http({
-          method:'get',
-          url:this.apiUrl.novelApiList,
-          params:{category:this.novelType}
-        }).then(res=>{
-          if(res.status==200){
+          method: 'get',
+          url: this.apiUrl.novelApiList,
+          params: {category: this.novelType}
+        }).then(res => {
+          if (res.status == 200) {
             this.moreLists = res.data.novelList.novelItemList;
             this.novelTitle = res.data.novelList.name;
           }
         }).catch();
       },
-      goNovelDetail(id, type){
-         this.$router.push({path: '/bookDetail', query: {id: id, type: type}});
+      goNovelDetail(id, type) {
+        this.$router.push({path: '/bookDetail', query: {id: id, type: type}});
       }
     }
   }
@@ -79,30 +79,32 @@
   .moreList {
     height: 100%;
     overflow-y: auto;
+    background: #fff;
   }
 
   .clearfloat {
     zoom: 1
   }
 
-  .topBanner {
+  .moreList .topBanner {
     width: 100%;
     height: 46px;
     line-height: 46px;
     position: fixed;
-    left: 15px;
+    left: 0px;
     top: 0;
+    padding-left: 15px;
     background: #fff;
   }
 
-  .topBanner .returnBack {
+  .moreList .topBanner .returnBack {
     width: 12px;
     height: auto;
     vertical-align: middle;
     display: inline-block;
   }
 
-  .topBanner .topTitle {
+  .moreList .topBanner .topTitle {
     font-size: 17px;
     font-weight: 700;
     width: 100px;
@@ -110,46 +112,47 @@
     text-align: center;
     position: absolute;
     top: 0;
-    right: 30px;
+    right: 0;
     bottom: 0;
     left: 0;
     margin: auto;
   }
 
-  .lineBg {
-    position: fixed;
-    left: 0;
-    top: 46px;
+  .moreList .lineBg {
+    margin-top: 46px;
+    margin-bottom: 15px;
     width: 100%;
     height: 5px;
     background: url('../../assets/img/linebg.png')
   }
 
-  .comBooks {
-    padding: 65px 15px 0 15px;
+  .moreList .comBooks{
+    background: #fff;
   }
 
-  .comBooks .novelCon {
+  .moreList .comBooks .novelCon {
+    padding: 0 15px;
     margin-bottom: 15px;
   }
 
-  .comBooks .novelCon .novelLeft {
+  .moreList .comBooks .novelCon .novelLeft {
     width: 28%;
     float: left;
   }
 
-  .comBooks .novelCon .novelLeft img {
+  .moreList .comBooks .novelCon .novelLeft img {
     width: 100%;
     height: auto;
     vertical-align: middle;
+    box-shadow: 0px 0px 5px #999;
   }
 
-  .comBooks .novelCon .novelRight {
+  .moreList .comBooks .novelCon .novelRight {
     width: 65%;
     float: right;
   }
 
-  .comBooks .novelCon .novelRight .bookname {
+  .moreList .comBooks .novelCon .novelRight .bookname {
     font-size: 18px;
     line-height: 24px;
     font-weight: 700;
@@ -157,7 +160,7 @@
     color: #000;
   }
 
-  .comBooks .novelCon .novelRight .bookDescribed {
+  .moreList .comBooks .novelCon .novelRight .bookDescribed {
     font-size: 12px;
     color: #999;
     margin-bottom: 8px;
@@ -167,40 +170,40 @@
     letter-spacing: 1px;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo {
+  .moreList .comBooks .novelCon .novelRight .bookInfo {
     font-size: 12px;
     color: #999;
     line-height: 14px;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .described {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .described {
     float: right;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .described span {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .described span {
     background: #e0e0e0;
     padding: 0px 5px 1px 5px;
     vertical-align: middle;
     border-radius: 10px;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .author {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .author {
     width: 96px;
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
     float: left;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .author .icon {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .author .icon {
     vertical-align: middle;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .author .icon img {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .author .icon img {
     width: 8px;
   }
 
-  .comBooks .novelCon .novelRight .bookInfo .author .man {
+  .moreList .comBooks .novelCon .novelRight .bookInfo .author .man {
     vertical-align: middle;
   }
 </style>

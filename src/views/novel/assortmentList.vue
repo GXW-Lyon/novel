@@ -1,68 +1,72 @@
 <template>
-<v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
-  <div class="assortmentList">
-    <div class="assortmentCont">
-      <div class="assortment">
-        <div class="gender">
-          <span @click="changeSex(item,index)" v-for="(item,index) in genderLists"
-                :class="{'Active': genderIndex == index}">{{item==1?'男生':'女生'}}</span>
-        </div>
-        <div class="mold">
-          <span @click="changeAssortment(items,index)" v-for="(items,index) in channelLists"
-                :class="{'Active': channelIndex == index}">{{items.value}}</span>
-          <!-- <span @click="show=!show"><img src="../../assets/img/bottomJT.png" alt=""></span>
-          <transition name="fade">
-            <div v-if="show">
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-              <span>玄幻仙侠</span>
-            </div>
-          </transition> -->
-        </div>
-        <div class="completion">
-          <span @click="changeType(item,index)" v-for="(item,index) in statusLists"
-                :class="{'Active': typeIndex == index}">{{item==0?'全部':(item==1?'连载':'完结')}}</span>
-        </div>
+  <!--<v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">-->
+    <div class="assortmentList">
+      <div class="assortmentTop">
+        <div style="width:46px;height:100%;" @click="routeBack"><img class="returnBack" src="../../assets/img/returnback.png" alt=""></div>
+        <div class="topTitle">分类</div>
       </div>
-      <div class="filament"></div>
-      <div class="novelBooks">
-        <div class="novelCon clearfloat" v-for="item in serachLists"  @click="goDetail(item.id,item.type)">
-          <div class="novelLeft">
-            <img :src="item.cover" alt="">
+      <div class="assortmentCont">
+        <div class="assortment">
+          <div class="gender">
+            <span @click="changeSex(item,index)" v-for="(item,index) in genderLists"
+                  :class="{'Active': genderIndex == index}">{{item==1?'男生':'女生'}}</span>
           </div>
-          <div class="novelRight">
-            <p class="bookname">{{item.title}}</p>
-            <div class="bookDescribed">{{item.summary}}</div>
-            <div class="bookInfo clearfloat">
-              <div class="author">
-                <span class="icon"><img src="../../assets/img/man.png" alt=""></span>
-                <span class="man">作者：{{item.author}}</span>
+          <div class="mold">
+            <span @click="changeAssortment(items,index)" v-for="(items,index) in channelLists"
+                  :class="{'Active': channelIndex == index}">{{items.value}}</span>
+            <!-- <span @click="show=!show"><img src="../../assets/img/bottomJT.png" alt=""></span>
+            <transition name="fade">
+              <div v-if="show">
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
+                <span>玄幻仙侠</span>
               </div>
-              <div class="described">
-                <span>分类</span>
-                <span>{{item.state==0?'全部':(item.state==1?'连载':'完结')}}</span>
-              </div>
-            </div>
+            </transition> -->
+          </div>
+          <div class="completion">
+            <span @click="changeType(item,index)" v-for="(item,index) in statusLists"
+                  :class="{'Active': typeIndex == index}">{{item==0?'全部':(item==1?'连载':'完结')}}</span>
           </div>
         </div>
+        <div class="filament"></div>
+        <div class="novelBooks">
+          <div class="novelCon clearfloat" v-for="item in serachLists"  @click="goDetail(item.id,item.type)">
+            <div class="novelLeft">
+              <img :src="item.cover" alt="">
+            </div>
+            <div class="novelRight">
+              <p class="bookname">{{item.title}}</p>
+              <div class="bookDescribed">{{item.summary}}</div>
+              <div class="bookInfo clearfloat">
+                <div class="author">
+                  <span class="icon"><img src="../../assets/img/man.png" alt=""></span>
+                  <span class="man">作者：{{item.author}}</span>
+                </div>
+                <div class="described">
+                  <!-- <span>分类</span> -->
+                  <span>{{item.state==0?'全部':(item.state==1?'连载':'完结')}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <wv-loadmore type="line" text="大蜜小说"></wv-loadmore>
     </div>
-    <wv-loadmore type="line" text="这就是我的底线"></wv-loadmore>
-  </div>
-</v-touch>
+  <!--</v-touch>-->
 </template>
 <script>
   export default {
@@ -89,6 +93,9 @@
       this.cateGoryList();
     },
     methods: {
+      routeBack() {
+        this.$router.go(-1)
+      },
       cateGoryList() {
         this.$http({
           method: 'get',
@@ -168,10 +175,50 @@
   .assortmentList {
     color: #999;
     font-size: 14px;
+    background: #fff;
+  }
+
+  .assortmentList .assortmentTop {
+    width: 100%;
+    height: 46px;
+    line-height: 46px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding-left:15px;
+    background: #fff;
+    z-index: 999;
+    padding-left: 15px;
+    color: #000;
+  }
+
+  .assortmentList .assortmentTop .returnBack {
+    width: 12px;
+    height: auto;
+    vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .assortmentList .assortmentTop .topTitle {
+    font-size: 17px;
+    font-weight: 700;
+    width: 80%;
+    height: 46px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .assortmentList .assortmentCont {
-    padding: 0 15px;
+    padding: 46px 15px 0 15px;
   }
 
   .assortmentList .filament {
@@ -249,6 +296,7 @@
     width: 100%;
     height: auto;
     vertical-align: middle;
+    box-shadow: 0px 0px 5px #999;
   }
 
   .assortmentList .novelBooks .novelCon .novelRight {
@@ -260,16 +308,16 @@
     font-size: 18px;
     line-height: 24px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: #000;
   }
 
   .assortmentList .novelBooks .novelCon .novelRight .bookDescribed {
     font-size: 12px;
     color: #999;
-    margin-bottom: 8px;
-    line-height: 22px;
-    height: 70px;
+    margin-bottom: 12px;
+    line-height: 16px;
+    height: 50px;
     overflow: hidden;
     letter-spacing: 1px;
   }
@@ -277,7 +325,7 @@
   .assortmentList .novelBooks .novelCon .novelRight .bookInfo {
     font-size: 12px;
     color: #999;
-    line-height: 12px;
+    line-height: 14px;
   }
 
   .assortmentList .novelBooks .novelCon .novelRight .bookInfo .described {
@@ -292,6 +340,8 @@
   }
 
   .assortmentList .novelBooks .novelCon .novelRight .bookInfo .author {
+    width: 65%;
+    overflow: hidden;
     float: left;
   }
 
@@ -300,7 +350,7 @@
   }
 
   .assortmentList .novelBooks .novelCon .novelRight .bookInfo .author .icon img {
-    width: 8px;
+    width: 10px;
   }
 
   .assortmentList .novelBooks .novelCon .novelRight .bookInfo .author .man {

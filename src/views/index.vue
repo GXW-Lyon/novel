@@ -19,11 +19,14 @@
     watch:{
       '$route'(to,from){
         console.log(to);
-        console.log(from);
-        if(to.query.id>from.query.id){
-          this.$store.state.transitionName = 'slide-left'
+        if(to.query.id<3){
+          if(to.query.id>from.query.id){
+            this.$store.state.transitionName = 'slide-left'
+          }else{
+            this.$store.state.transitionName = 'slide-right'
+          }
         }else{
-          this.$store.state.transitionName = 'slide-right'
+          this.$store.state.transitionName = ''
         }
       }
     },
@@ -36,6 +39,7 @@
   .allView {
     width: 100%;
     height: 100%;
+    background: #fff;
   }
 
   .topnav {
@@ -51,14 +55,15 @@
     position: absolute;
     top: 0;
     left: 0;
-    padding-top: 115px;
+    padding-top: 56px;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 1;
     -webkit-overflow-scrolling: touch;
     transition: all .8s cubic-bezier(.55, 0, .1, 1);
+    /*touch-action: pan-y !important;*/
   }
-  .novelCont{
+  .moreList,.novelCont,.readNovel .page{
     -webkit-overflow-scrolling: touch;
   }
   .transparentBg {
@@ -77,7 +82,6 @@
     box-shadow: 0px 0px 5px #999;
   }
 
-  
   .slide-left-enter,
   .slide-right-leave-active {
       opacity: 0;

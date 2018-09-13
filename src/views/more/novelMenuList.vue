@@ -1,15 +1,15 @@
 <template>
   <div class="novelMenuList"  ref="menuWrap">
     <div class="topBanner">
-      <img @click="routeBack" class="returnBack" src="../../assets/img/returnback.png" alt="">
+      <div style="width:46px;height:100%;display: inline-block;" @click="routeBack"><img class="returnBack" src="../../assets/img/returnback.png" alt=""></div>
       <span class="topTitle">{{novelTitle}}</span>
     </div>
     <div class="lineBg"></div>
     <div class="menus">
       <div class="menuTop">
-        <div class="allList">共345章</div>
+        <div class="allList">共{{chapterSum}}章</div>
         <div v-if="sorts" class="paixu" @click="NovelMenuList(novelId,0,'desc')"><img src="../../assets/img/paixu.png" alt=""></div>
-        <div v-else-if="!sorts" class="paixu" @click="NovelMenuList(novelId,0,'')"><img src="../../assets/img/paixu.png" alt=""></div>
+        <div v-else-if="!sorts" class="paixu" @click="NovelMenuList(novelId,0,'')"><img src="../../assets/img/paixu1.png" alt=""></div>
       </div>
       <div class="menWra">
         <div class="comRow" v-for="item in menuLists" @click="goRead(novelId,item.chapter,novelTitle)">
@@ -38,7 +38,9 @@
         nextpage:0,
         prepage:0,
         sorts:true,
-        desc:''
+        desc:'',
+        chapterSum:0,
+        obj:{}
       }
     },
     created() {
@@ -60,6 +62,7 @@
           params:{id:id,begin:page,sort:sort}
         }).then(res=>{
           if(res.status==200){
+            console.log(res);
             this.$refs.menuWrap.scrollTop = 0;
             this.menuLists = res.data.catalogList;
             this.nextpage = res.data.nextpage;
@@ -77,15 +80,22 @@
           params:{id:id,begin:page,sort:sort}
         }).then(res=>{
           if(res.status==200){
+            console.log(res);
             this.$refs.menuWrap.scrollTop = 0;
             this.menuLists = res.data.catalogList;
             this.nextpage = res.data.nextpage;
             this.prepage = res.data.prepage;
+            this.chapterSum = res.data.chapterSum;
           }
         }).catch();
       },
       goRead(id,page,title){
-        this.$router.push({path: '/readNovel', query: { id:id,page: page,title:title}});
+        if(localStorage.getItem('novelInfo')!=null){
+            this.obj =  JSON.parse(localStorage.getItem('novelInfo'));
+        }
+        this.obj[id]=page;
+        localStorage.setItem('novelInfo',JSON.stringify(this.obj));
+        this.$router.push({path: '/readNovel', query: { id:id,page:page,title:title}});
       },
     }
   }
@@ -99,6 +109,7 @@
     top: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    background: #fff;
   }
 
   .novelMenuList .topBanner {
@@ -122,6 +133,13 @@
 
   .novelMenuList .topBanner .topTitle {
     font-size: 18px;
+    width:80%;
+    position:absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin:auto;
     font-weight: 700;
     vertical-align: middle;
     padding-left: 15px;
@@ -142,6 +160,7 @@
     left: 0;
     top: 0;
     padding: 70px 15px 51px 15px;
+    background: #fff;
   }
 
   .novelMenuList .menus .menuTop {
